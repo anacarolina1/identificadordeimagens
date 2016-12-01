@@ -1,0 +1,41 @@
+{# Load the tag library#}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% load staticfiles %}
+<script src="{% static 'jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+{% bootstrap_javascript %}
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+
+<!-- {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %} -->
+
+<div class="row">
+  <div class="col-md-6">
+    <form action="{% url 'image_retrieval_app:image_app' %}" method="post" class="form" enctype="multipart/form-data">
+        {% csrf_token %}
+      <!--   {% for d in classication_data %}
+            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ d }}" />
+            <label for="choice{{ forloop.counter }}">{{ d }}</label><br />
+        {% endfor %}
+        {% buttons %}
+        <input type="submit" class="btn btn-primary" value="Vote" />
+        {% endbuttons %} -->
+        <div class="form-group">
+              <p class="help-block">Upload an image to classify.</p>
+              <div class="form-group">
+                <label for="exampleInputFile">Upload</label>
+                <input type="file" name="image_file">
+              </div>
+              <button type="submit" class="btn btn-default">Classify</button>
+        </div>
+    </form>
+  </div>
+  <div class="col-md-6">
+      <img src="{{image_file}}" alt="image_upload" height="200" width="300">
+      <p> Class label {{labels}}</p>
+  </div>
+</div>
