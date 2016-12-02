@@ -1,5 +1,11 @@
 # Trabalho Final de DAS
 
+Trabalho final da disciplina de Desenvolvimento Avançado de Software da UnB.
+
+Professor: Teófilo Campos.
+
+Alunas: Ana Carolina e Priscilla.
+
 ## Dependências
 
 [OPENCV](http://opencv.org/downloads.html)
