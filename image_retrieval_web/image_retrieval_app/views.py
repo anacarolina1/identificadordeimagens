@@ -23,15 +23,14 @@ caffe_root = os.path.join(home_dir, 'das/caffe')
 import caffe
 
 
-
 caffe.set_mode_cpu()
 
 model_def = os.path.join(caffe_root, 'models', 'bvlc_reference_caffenet','deploy.prototxt')
 model_weights = os.path.join(caffe_root, 'models','bvlc_reference_caffenet','bvlc_reference_caffenet.caffemodel')
 
-net = caffe.Net(model_def,      # defines the structure of the model
-                model_weights,  # contains the trained weights
-                caffe.TEST)     # use test mode (e.g., don't perform dropout)
+net = caffe.Net(model_def,      
+                model_weights,  
+                caffe.TEST)     
 
 
 mu = np.load(os.path.join(caffe_root, 'python','caffe','imagenet','ilsvrc_2012_mean.npy'))
@@ -55,13 +54,13 @@ labels = np.loadtxt(labels_file, str, delimiter='\t')
 def index(request):
     if request.method == 'POST' and request.FILES['imagem']:
         imagem = request.FILES['imagem']
-        fs = FileSystemStorage()
-        filename = fs.save(imagem.name, imagem)
-        uploaded_file_url = fs.url(filename)
+        file_storage = FileSystemStorage()
+        filename = file_storage.save(imagem.name, imagem)
+        url_imagem_escolhida = file_storage.url(filename)
 
-        images_vector = create_images_vector(uploaded_file_url)
+        images_vector = images_retrieve(url_imagem_escolhida)
         return render(request , 'resultado.html', {
-            'uploaded_file_url': uploaded_file_url ,
+            'url_imagem_escolhida': url_imagem_escolhida,
             'images_vector' : images_vector
         })
     return render(request, 'index.html')
@@ -139,20 +138,20 @@ def load_dataset(images_path):
     return vectors, img_files
 
 
-
-def create_images_vector(uploaded_file_url):
+# Recupera imagens usando a cor.
+def images_retrieve(url_imagem_escolhida):
     vectors, img_files = load_dataset(images_path)
     KNN = NearestNeighbors(Xtr=vectors, img_files=img_files, images_path=images_path, labels=labels)
 
     # Freeing memory:
     del vectors
 
-    #remove a first element of uploaded_file_url string
-    uploaded_file_url = list(uploaded_file_url)
-    uploaded_file_url.pop(0)
-    uploaded_file_url = "".join(uploaded_file_url)
+    #remove a first element of url_imagem_escolhida string
+    url_imagem_escolhida = list(url_imagem_escolhida)
+    url_imagem_escolhida.pop(0)
+    url_imagem_escolhida = "".join(url_imagem_escolhida)
 
-    images_vector = KNN.retrieve(predict_imageNet(uploaded_file_url))
+    images_vector = KNN.retrieve(predict_imageNet(url_imagem_escolhida))
     return images_vector
 
  
