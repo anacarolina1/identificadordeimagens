@@ -204,34 +204,3 @@ class NearestNeighbors:
         return images
 
 
-def classify(self, img_path):
-    """
-    classify input image
-
-    :param img_path: The path to input image.
-    :type img_path: str
-    :return: predicted label (string)
-    """
-    im = caffe.io.load_image(img_path)
-    im = caffe.io.resize_image(im, self.img_shape)
-    self.net.blobs['data'].data[0] = self.transformer.preprocess('data', im)
-    out = self.net.forward()
-    predicted_output = np.argmax(out['ip2'][0])
-    return self.label_dict[predicted_output]
-
-def get_predicition_result(self, img_path):
-    """
-    compute the output vector in the last layer
-
-    :param img_path: The path to input image.
-    :type img_path: str
-    :reurn: whole vector
-    """
-    im = caffe.io.load_image(img_path)
-    im = caffe.io.resize_image(im, self.img_shape)
-    self.net.blobs['data'].data[0] = self.transformer.preprocess('data', im)
-    out = self.net.forward()
-    output_vector = out['ip2'][0]
-    predicted_output = np.argmax(output_vector)
-    normalized_output = output_vector/float(np.max(output_vector))
-    return [output_vector, normalized_output, self.label_dict[predicted_output]]
